@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time Speech-to-Text</title>
+    <style>
+        #transcription {
+            font-family: sans-serif;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-time Speech-to-Text</h1>
+    <div id="transcription"></div>
+
+    <script>
+        const socket = new WebSocket("ws://YOUR_CLOUD_RUN_URL"); // Cloud Run URL로 변경
+
+        socket.onmessage = event => {
+            const transcriptionDiv = document.getElementById("transcription");
+            transcriptionDiv.textContent = event.data; // 텍스트 내용 업데이트
+        };
+
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                const mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0 && socket.readyState === WebSocket.OPEN) {
+                        event.data.arrayBuffer().then(buffer => {
+                            socket.send(buffer);
+                        });
+                    }
+                };
+                mediaRecorder.start(100);
+            })
+            .catch(error => {
+                console.error("Error accessing microphone:", error);
+            });
+    </script>
+</body>
+</html>
