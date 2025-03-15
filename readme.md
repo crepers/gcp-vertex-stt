@@ -92,6 +92,11 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 ## Create Cloud Run Service
 
+```
+python -m venv .venv
+source .venv/bin/activate
+```
+
 ### Install dependencies
 
 ```
@@ -111,6 +116,13 @@ docker build --platform linux/arm64 -t "$LOCATION-docker.pkg.dev/$PROJECT_ID/$AR
 docker build -t "$LOCATION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_REPO/$IMAGE_NAME:$IMAGE_TAG" -f cloudrun-src/Dockerfile cloudrun-src
 ```
 
+- Configure Docker
+Run the following command to configure gcloud as the credential helper for the Artifact Registry domain associated with this repository's location:
+
+```
+gcloud auth configure-docker $LOCATION-docker.pkg.dev
+```
+
 - Push the docker image
 ```
 docker push "$LOCATION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REGISTRY_REPO/$IMAGE_NAME:$IMAGE_TAG"
@@ -124,7 +136,7 @@ gcloud run deploy "$CLOUDRUN_SERVICE" \
   --region="$LOCATION" \
   --max-instances=1 \
   --concurrency=1 \
-  --no-allow-unauthenticated \
+  --allow-unauthenticated \
   --set-env-vars="PROJECT_ID=$PROJECT_ID,REGION=$LOCATION" \
   --service-account="$SERVICE_ACCOUNT_EMAIL" \
   --project="$PROJECT_ID"

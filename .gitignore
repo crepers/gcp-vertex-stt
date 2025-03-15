@@ -1,0 +1,37 @@
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env
+venv/
+**/.venv/
+**/.env/
+
+# Terraform
+**/[.]terraform/
+**/*.tfplan
+**/.terraform.tfstate
+**/.terraform.tfstate.*
+**/crash.log
+**/*.tfplan
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Google Cloud
+.gcloud/
+
+# IDE specific
+.idea/
+.vscode/
+
+# Other
+*.log
+*.tmp
+*.swp
